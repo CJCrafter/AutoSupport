@@ -1,0 +1,28 @@
+{
+  "Question": "Why are the region barriers not working?",
+  "Channel_Whitelist": true,
+  "Channels": [
+    "1020927798380085249"
+  ],
+  "Keys": [
+    "barrier,border,borders,barriers,borderline:5",
+    "dont work,doesnt,not working,not,showing up,broken,disabled,setup,enable,create:1",
+	"enter,protected,areas,prevent,protect:1"
+  ],
+  "Delete_After_Answer": true,
+  "Key_Threshold": 6,
+  "Message": [
+    "In order to create the DeluxeCombat region barriers, please go through following steps:",
+	"\n ",
+	"\n**(1)**: Make sure **WorldGuard** and the **DeluxeCombat WorldGuard Addon** is installed. The DeluxeCombat WorldGuard Addon can be found [HERE](https://www.spigotmc.org/resources/70659/)",
+	"\n**(2)**: Please check if the DeluxeCombat WorldGuard Addon has been **enabled** correctly. Simply run **/dc-addon list** and check if WORLDGUARD is listed.",
+	"\n**(3)**: Now make sure that the Region Barriers are enabled. You can enable them here: **/dc menu, Settings, Supported Plugins, WorldGuard, Region Barriers**",
+	"\n**Optional (4)**: If you want to use the physical barrier (blocks are visible) choose **PHYSICAL** as the border mode, if not choose **INVISIBLE**",
+	"\n**(5)**: Make sure theres an **pvp allow** flag on your pvp region and a **pvp deny** flag on your non pvp region",
+	"\n**(6)**: Make sure that your non-pvp region has an **HIGHER** priority than your pvp region. You can change the priority of a region with **/rg priority**",
+	"\n ",
+	"\n**!IMPORTANT NOTE!** Some spigot forks have the ability to disable the PlayerMoveEvent. Please make sure your Spigot Fork does not do that!",
+	"\n",
+	"\n*DeluxeCombat Addon is not enabled? Just ask: Why is the worldguard addon not enabled?*"
+  ]
+}

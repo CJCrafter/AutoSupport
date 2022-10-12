@@ -1,0 +1,27 @@
+{
+  "Question": "How to color messages/items/lore",
+  "Channel_Whitelist": true,
+  "Channels": [
+    "1020927798380085249"
+  ],
+  "Delete_After_Answer": false,
+  "Keys": [
+    "rgb,hex,color code:5",
+    "#,color,red,green,blue:1",
+    "&:1",
+    "text,message,string,name,lore,line:1"
+  ],
+  "Remove_After": -1,
+  "Key_Threshold": 2,
+  "Message": [
+    "Instead of using the old format `&<code>` like `&c` for red and `&6` for gold, we use",
+    " the [adventure format](https://docs.adventure.kyori.net/minimessage/format.html). This",
+    " allows you to use custom colors, gradients, events, and more! To help build custom messages, ",
+    " try checking out the [web editor](https://webui.adventure.kyori.net/)."
+  ],
+  "Media": "https://user-images.githubusercontent.com/43940682/181638380-921e157d-15d2-46ab-abe6-189ce1795b9b.png",
+  "Button": {
+    "Text": "Web Editor",
+    "Link": "https://webui.adventure.kyori.net/"
+  }
+}
