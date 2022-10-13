@@ -91,6 +91,15 @@ public class DiscordImpl extends ListenerAdapter {
         // bot to autofill an answer.
         boolean forceQuestion = question.startsWith("?") && !question.equals("?");
 
+        // Sometimes admins will reply to a message and manually trigger a
+        // specific auto-support message. In this case, the auto-support should
+        // reply to the USER's message INSTEAD OF the ADMIN's message.
+        if (forceQuestion && message.getMessageReference() != null) {
+            Message clientMessage = message.getMessageReference().resolve().complete();
+            logger.accept("Actually replying to '" + clientMessage + "' instead of '" + message + "'");
+            message = clientMessage;
+        }
+
         // Block the bot from replying to staff members, unless the message
         // starts with '?'.
         if (!forceQuestion && member.getRoles().stream().anyMatch(role -> staffRoles.contains(role.getId())))
@@ -126,7 +135,7 @@ public class DiscordImpl extends ListenerAdapter {
 
         // Gather data from the event
         Message answer = event.getMessage();
-        Message question = answer.getMessageReference().resolve().complete();
+        Message question = answer.getMessageReference() == null ? null : answer.getMessageReference().resolve().complete();
         MessageEmbed embed = answer.getEmbeds().isEmpty() ? null : answer.getEmbeds().get(0);
         Member member = event.getMember();
         boolean shouldDelete = embed != null && embed.getFooter() != null && DiscordHelper.DELETE_FOOTER.equals(embed.getFooter().getText());
