@@ -167,6 +167,7 @@ public class DiscordImpl extends ListenerAdapter {
         // This cannot be done in the footer since footers cannot have timestamps.
         if (wasDeleted) {
             EmbedBuilder edit = new EmbedBuilder(embed).appendDescription("\n\n" + deleteInfo);
+            edit.setFooter(null);
             answer.editMessageEmbeds(edit.build()).setActionRow(disabledButtons).queue();
         }
 

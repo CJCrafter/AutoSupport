@@ -47,8 +47,8 @@ public class SupportData {
         this.button = button;
     }
 
-    @SuppressWarnings("unchecked")
-    public SupportData(JSONObject json) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public SupportData(Map json) {
         this.activator = ACTIVATORS.get(((String) json.getOrDefault("Activator", "QUESTION")).toUpperCase(Locale.ROOT));
         this.isOnlyUnverified = (Boolean) json.getOrDefault("Only_Unverified", false);
         this.isDeleteAfterAnswer = (Boolean) json.getOrDefault("Delete_After_Answer", true);

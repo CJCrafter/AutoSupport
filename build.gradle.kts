@@ -35,3 +35,7 @@ tasks {
         filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
     }
 }
+
+tasks.test {
+    useJUnitPlatform()
+}

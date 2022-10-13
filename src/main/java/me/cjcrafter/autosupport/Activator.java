@@ -1,5 +1,8 @@
 package me.cjcrafter.autosupport;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -10,6 +13,8 @@ import java.util.function.Predicate;
  */
 @FunctionalInterface
 public interface Activator extends Predicate<String> {
+
+    Set<String> QUESTION_WORDS = new HashSet<>(Arrays.asList("why", "what", "can", "is", "how", "where", "do", "does", "which", "am"));
 
     /**
      * Returns <code>true</code> for all input.
@@ -26,9 +31,11 @@ public interface Activator extends Predicate<String> {
      *     <li>Second word is a question word</li>
      *     <li>If the input passed the "car no go" check</li>
      * </ul>
+     *
+     * @implNote
+     * Input must be lowercase
      */
     Activator QUESTION = Activator::isQuestion;
-
 
     static boolean isQuestion(String input) {
         if (input.startsWith("¿") || input.endsWith("?"))
@@ -42,7 +49,7 @@ public interface Activator extends Predicate<String> {
         // Sometimes people go for a full on introduction before asking their
         // question, like: "Hello, I have a problem with the plugin. Is there
         // a way..."
-        String[] sentences = input.split("\\.");
+        String[] sentences = input.split("[.,!]");
         if (sentences.length > 1) {
             for (String sentence : sentences)
                 if (isQuestion(sentence))
@@ -57,9 +64,9 @@ public interface Activator extends Predicate<String> {
         String[] split = input.split(" ");
         boolean isNegative = false;
         for (String s : split) {
-            switch (s) {
-                case "no", "don't", "dont", "wont", "won't", "cant", "can't", "didnt", "didn't" -> isNegative = true;
-                case "work" -> {
+            switch (trim(s)) {
+                case "no", "don't", "dont", "wont", "won't", "cant", "can't", "didnt", "didn't", "not" -> isNegative = true;
+                case "work", "working", "works" -> {
                     // check negative BEFORE "work" since
                     if (isNegative)
                         return true;
@@ -67,10 +74,7 @@ public interface Activator extends Predicate<String> {
             }
         }
 
-        boolean isFirstQuestion = switch (split[0]) {
-            case "why", "what", "can", "is", "how", "where", "do", "does", "which", "am" -> true;
-            default -> false;
-        };
+        boolean isFirstQuestion = QUESTION_WORDS.contains(trim(split[0]));
 
         // Many people like to preface there question with a word:
         // "Hi, can I get help with this?"
@@ -78,11 +82,29 @@ public interface Activator extends Predicate<String> {
         // "Yeah where can I find that?"
         // So we check the second word. This will lead to some false positives,
         // but it is a small price to pay since people can delete the bot message.
-        boolean isSecondQuestion = split.length > 1 && switch (split[1]) {
-            case "why", "what", "can", "is", "how", "where", "do", "does", "which", "am" -> true;
-            default -> false;
-        };
+        boolean isSecondQuestion = split.length > 1 && QUESTION_WORDS.contains(trim(split[1]));
 
         return isFirstQuestion || isSecondQuestion;
+    }
+
+    static String trim(String str) {
+        int start;
+        for (start = 0; start < str.length(); start++) {
+            if (Character.isAlphabetic(str.charAt(start)))
+                break;
+        }
+
+        int stop;
+        for (stop = str.length() - 1; stop >= 0; stop--) {
+            if (Character.isAlphabetic(str.charAt(stop)))
+                break;
+        }
+
+        // Whenever the string is filled with non-alphabetical characters, we
+        // simply return whatever we started with.
+        if (start >= stop)
+            return str;
+
+        return str.substring(start, stop + 1);
     }
 }
