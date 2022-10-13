@@ -105,21 +105,33 @@ public class DiscordImpl extends ListenerAdapter {
         if (!forceQuestion && member.getRoles().stream().anyMatch(role -> staffRoles.contains(role.getId())))
             return;
 
+        // Store the best auto support
+        SupportData best = null;
+        int maxScore = Integer.MIN_VALUE;
+
         for (SupportData data : supportList) {
             if (!DiscordHelper.isChannelWhitelist(data, channel))
                 continue;
             if (!forceQuestion && !data.getActivator().test(question))
                 continue;
-            if (!data.matchesQuestion(question))
-                continue;
             if (data.isOnlyUnverified() && member.getRoles().stream().anyMatch(role -> verifiedRole.equals(role.getId())))
                 continue;
 
-            EmbedBuilder embed = DiscordHelper.getEmbed(data);
-            List<Button> buttons = DiscordHelper.getButtons(data);
+            int score = data.score(question);
+
+            // Only save if the response is a better match
+            if (score > maxScore) {
+                best = data;
+                maxScore = score;
+            }
+        }
+
+        // Send the message/buttons
+        if (best != null) {
+            EmbedBuilder embed = DiscordHelper.getEmbed(best);
+            List<Button> buttons = DiscordHelper.getButtons(best);
 
             message.replyEmbeds(embed.build()).addActionRow(buttons).queue();
-            return;
         }
     }
 

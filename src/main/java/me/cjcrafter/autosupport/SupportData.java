@@ -167,13 +167,13 @@ public class SupportData {
      * @param question The lowercase user message.
      * @return true if the question matches THIS data.
      */
-    public boolean matchesQuestion(String question) {
+    public int score(String question) {
         AtomicInteger count = new AtomicInteger();
         keys.forEach((matcher, weight) -> {
             if (matcher.test(question))
                 count.addAndGet(weight);
         });
 
-        return count.get() >= keyThreshold;
+        return count.get();
     }
 }
