@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * @implNote
- * It is expected that your bot is run on exactly one server.
+ * @implNote It is expected that your bot is run on exactly one server.
  */
 public class DiscordImpl extends ListenerAdapter {
 
@@ -39,7 +38,7 @@ public class DiscordImpl extends ListenerAdapter {
     @SuppressWarnings("unchecked")
     public DiscordImpl(URL folder, Consumer<String> logger) {
         this.supportList = new ArrayList<>();
-        this.logger = logger == null ? str -> {} : logger;
+        this.logger = logger == null ? str -> { /* do nothing */ } : logger;
 
         JSONParser parser = new JSONParser();
         FileHelper.forEachResource(folder, file -> {
@@ -97,6 +96,7 @@ public class DiscordImpl extends ListenerAdapter {
         if (forceQuestion && message.getMessageReference() != null) {
             Message clientMessage = message.getMessageReference().resolve().complete();
             logger.accept("Actually replying to '" + clientMessage + "' instead of '" + message + "'");
+            message.delete().queueAfter(3L, TimeUnit.SECONDS);
             message = clientMessage;
         }
 
@@ -118,6 +118,8 @@ public class DiscordImpl extends ListenerAdapter {
                 continue;
 
             int score = data.score(question);
+            if (score < data.getKeyThreshold())
+                continue;
 
             // Only save if the response is a better match
             if (score > maxScore) {
@@ -155,7 +157,7 @@ public class DiscordImpl extends ListenerAdapter {
         // Since we already did the button check, ALL of these conditions SHOULD
         // be impossible. That being said, CJCrafter has a history of breaking
         // the poor CubeDev Bot, so let's be thorough.
-        if (question == null ||  member == null || embed == null || embed.getTitle() == null) {
+        if (question == null || member == null || embed == null || embed.getTitle() == null) {
             logger.accept("Something went wrong... one of these is null??? " + question + ", " + member + ", " + embed);
             return;
         }
@@ -168,13 +170,9 @@ public class DiscordImpl extends ListenerAdapter {
             return;
         }
 
-        // Handle deleting the question/answer.
-        if (accept && shouldDelete) question.delete().queueAfter(30L, TimeUnit.MINUTES);
-        if (shouldDelete || !accept) answer.delete().queueAfter(accept ? 30L : 0L, TimeUnit.MINUTES);
-
         // The unix-format time (unix is measured in seconds)
-        boolean wasDeleted = shouldDelete || !accept;
-        long unix = System.currentTimeMillis() / 1000L + (accept ? 30L * 60L : 0L);
+        boolean isDelete = shouldDelete || !accept;
+        long unix = System.currentTimeMillis() / 1000L + (accept ? 30L * 60L : 8L);
         String deleteInfo = "Message will be removed <t:" + unix + ":R>"; // R = relative
 
         // Disabling the 2 accept and reject buttons. Leaving any extra buttons.
@@ -184,12 +182,19 @@ public class DiscordImpl extends ListenerAdapter {
             return temp;
         }).toArray(Button[]::new);
 
-        // Edit the original message to show when the message will be deleted.
-        // This cannot be done in the footer since footers cannot have timestamps.
-        if (wasDeleted) {
-            EmbedBuilder edit = new EmbedBuilder(embed).appendDescription("\n\n" + deleteInfo);
-            edit.setFooter(null);
-            answer.editMessageEmbeds(edit.build()).setActionRow(disabledButtons).queue();
+        // Handle deleting the question/answer.
+        if (accept && shouldDelete) question.delete().queueAfter(30L, TimeUnit.MINUTES);
+        if (isDelete) {
+            if (accept) {
+                EmbedBuilder edit = new EmbedBuilder(embed).appendDescription("\n\n" + deleteInfo).setFooter(null);
+                answer.editMessageEmbeds(edit.build()).setActionRow(disabledButtons).queue(m -> m.delete().queueAfter(30L, TimeUnit.MINUTES));
+            } else {
+                EmbedBuilder edit = new EmbedBuilder()
+                        .setColor(Color.RED)
+                        .setTitle("Auto Support")
+                        .appendDescription("Sorry about my poor answer. " + deleteInfo);
+                answer.editMessageEmbeds(edit.build()).setActionRow(disabledButtons).queue(m -> m.delete().queueAfter(9L, TimeUnit.SECONDS));
+            }
         }
 
         // Let the event know the button press was successful. Otherwise, the
@@ -202,7 +207,7 @@ public class DiscordImpl extends ListenerAdapter {
         if (logsChannel != null) {
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle("Auto Support Feedback")
-                    .setDescription("The user was " + (accept ? "happy" : "unhappy") + " with the response. " + (wasDeleted ? deleteInfo : ""))
+                    .setDescription("The user was " + (accept ? "happy" : "unhappy") + " with the response. " + (isDelete ? deleteInfo : ""))
                     .setImage(member.getAvatarUrl())
                     .setColor(accept ? Color.GREEN : Color.RED)
                     .addField("User", member.getAsMention(), true)
