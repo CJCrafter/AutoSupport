@@ -4,7 +4,7 @@
 
 [![Download](https://img.shields.io/github/downloads/CJCrafter/AutoSupport/total?color=green)](https://github.com/CJCrafter/AutoSupport/releases/latest)
 [![Version](https://img.shields.io/github/v/release/CJCrafter/AutoSupport?include_prereleases&label=version)](https://github.com/CJCrafter/AutoSupport/releases/latest)
-[![Tutorial](https://img.shields.io/youtube/channel/subscribers/UC8KH0aOumN--3Mzjs2k2kcw?label=Tutorial&style=social)](https://github.com/CJCrafter/AutoSupport/wiki)
+[![Tutorial](https://img.shields.io/youtube/channel/subscribers/UC8KH0aOumN--3Mzjs2k2kcw?label=Tutorial&style=social)](https://youtu.be/2HEz_YMlSjI)
 [![License](https://img.shields.io/github/license/CJCrafter/AutoSupport)](https://github.com/CJCrafter/AutoSupport/blob/master/LICENSE)
 
 A poor man's solution to answering those pesky commonly asked questions automatically.
@@ -67,7 +67,7 @@ dependencies {
 ```
 
 ### How to (Use)
-Check out my [YouTube video]() for a more in-depth explanation. 
+Check out my [YouTube video](https://youtu.be/2HEz_YMlSjI) for a more in-depth explanation. 
 
 ```json
 {
