@@ -9,12 +9,26 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Utility class for {@link java.io.File} or other IO (input/output) operations.
+ */
 public final class FileHelper {
 
+    /**
+     * Don't let anyone instantiate this utility class.
+     */
     private FileHelper() {
         throw new IllegalStateException("Nobody may instantiate " + FileHelper.class);
     }
 
+    /**
+     * Loops through each file in the given <code>source</code> directory, and
+     * feeds them to the given consumer. Searches through sub-folders
+     * recursively.
+     *
+     * @param source   The non-null source folder.
+     * @param consumer The non-null action for each file.
+     */
     public static void forEachResource(URL source, Consumer<Path> consumer) {
         try {
             PathReference pathReference = PathReference.of(source.toURI());

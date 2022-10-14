@@ -21,10 +21,20 @@ public final class DiscordHelper {
     public static final String REJECT_KEY = "auto-support-reject";
     public static final String DELETE_FOOTER = "Pressing the buttons will delete this message";
 
+    /**
+     * Don't let anyone instantiate this utility class.
+     */
     private DiscordHelper() {
         throw new IllegalStateException("Nobody may instantiate " + DiscordHelper.class);
     }
 
+    /**
+     * Constructs an {@link EmbedBuilder} intended for the user who asks the
+     * question.
+     *
+     * @param support The non-null support data with the message content.
+     * @return The non-null Discord embed.
+     */
     public static EmbedBuilder getEmbed(SupportData support) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle(support.getQuestion())
@@ -38,6 +48,13 @@ public final class DiscordHelper {
         return embed;
     }
 
+    /**
+     * Returns two or three buttons. The first two are the accept/reject
+     * buttons. The optional third button is for more information.
+     *
+     * @param support The non-null support data.
+     * @return The non-null list of two or three buttons.
+     */
     public static List<Button> getButtons(SupportData support) {
         List<Button> buttons = new ArrayList<>();
         buttons.add(Button.success(ACCEPT_KEY, "This answered my question"));
@@ -48,6 +65,12 @@ public final class DiscordHelper {
         return buttons;
     }
 
+    /**
+     * Returns the "more-information" button.
+     *
+     * @param support The non-null support data.
+     * @return The more-information button, or null.
+     */
     public static Button getButton(SupportData support) {
         if (support.getButton() == null)
             return null;
@@ -58,8 +81,15 @@ public final class DiscordHelper {
         return Button.link(url, label);
     }
 
+    /**
+     * Returns <code>true</code> if the support message can be sent in the
+     * given channel.
+     *
+     * @param support The non-null support data.
+     * @param channel The non-null text channel to check.
+     * @return true if the message can be sent in the channel.
+     */
     public static boolean isChannelWhitelist(SupportData support, TextChannel channel) {
         return support.getChannelMatcher().test(channel.getId());
     }
-
 }

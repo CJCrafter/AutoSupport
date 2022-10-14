@@ -1,9 +1,12 @@
+import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
+
 group = "me.cjcrafter"
 version = "1.0.0"
 
 plugins {
     `java-library`
     `maven-publish`
+    id("com.github.breadmoirai.github-release") version "2.4.1"
 }
 
 repositories {
@@ -18,6 +21,8 @@ dependencies {
 }
 
 java {
+    withSourcesJar()
+    withJavadocJar()
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
@@ -38,4 +43,57 @@ tasks {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.register("releaseAutoSupport").configure {
+    dependsOn(":publish")
+    finalizedBy(":createGithubRelease")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/CJCrafter/AutoSupport")
+            credentials {
+                username = findProperty("user").toString()
+                password = findProperty("pass").toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+                groupId = "me.cjcrafter"
+                artifactId = "autosupport" // MUST be lowercase
+
+            from(components["java"])
+        }
+    }
+}
+
+tasks.register<GithubReleaseTask>("createGithubRelease").configure {
+    // https://github.com/BreadMoirai/github-release-gradle-plugin
+
+    owner.set("CJCrafter")
+    repo.set("AutoSupport")
+    authorization.set("Token ${findProperty("pass").toString()}")
+    tagName.set("$version")
+    targetCommitish.set("main")
+    releaseName.set("v${version}")
+    draft.set(true)
+    prerelease.set(false)
+    generateReleaseNotes.set(true)
+    body.set("")
+    overwrite.set(false)
+    allowUploadToExisting.set(false)
+    apiEndpoint.set("https://api.github.com")
+
+    setReleaseAssets(file("/build/libs/AutoSupport-$version"))
+
+    // If set to true, you can debug that this would do
+    dryRun.set(false)
+
+    doFirst {
+        println("Creating GitHub release")
+    }
 }

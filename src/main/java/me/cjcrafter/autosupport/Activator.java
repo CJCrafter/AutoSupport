@@ -10,16 +10,29 @@ import java.util.function.Predicate;
  * as a question. If you use a bot channel, like <code>#talk-to-bot</code>,
  * then you should see {@link #ALWAYS}. If you don't want the bot to respond
  * to every message, then you should use {@link #QUESTION}.
+ *
+ * <p>When implementing this interface, make sure to add it to the registry in
+ * {@link SupportData#ACTIVATORS}.
  */
 @FunctionalInterface
 public interface Activator extends Predicate<String> {
 
-    Set<String> QUESTION_WORDS = new HashSet<>(Arrays.asList("why", "what", "can", "is", "how", "where", "do", "does", "which", "am"));
+    /**
+     * List of question words used in {@link #isQuestion(String)}.
+     */
+    Set<String> QUESTION_WORDS = new HashSet<>(Arrays.asList("why", "what", "can", "is", "how", "where", "do", "does",
+            "which", "am", "are"));
 
     /**
      * Returns <code>true</code> for all input.
      */
     Activator ALWAYS = input -> true;
+
+    /**
+     * Returns <code>true</code> for any input that is a question.
+     * @see #isQuestion(String)
+     */
+    Activator QUESTION = Activator::isQuestion;
 
     /**
      * Returns <code>true</code> for any input that <i>appears to be a
@@ -32,11 +45,9 @@ public interface Activator extends Predicate<String> {
      *     <li>If the input passed the "car no go" check</li>
      * </ul>
      *
-     * @implNote
-     * Input must be lowercase
+     * @param input The non-null message from the user.
+     * @return true if the message is a question.
      */
-    Activator QUESTION = Activator::isQuestion;
-
     static boolean isQuestion(String input) {
         if (input.startsWith("¿") || input.endsWith("?"))
             return true;
@@ -87,6 +98,14 @@ public interface Activator extends Predicate<String> {
         return isFirstQuestion || isSecondQuestion;
     }
 
+    /**
+     * Trims any non-alphabetical characters from the beginning and end of the
+     * given string. If the given string doesn't have any alphabetical
+     * characters, the string is returned unmodified.
+     *
+     * @param str The non-null string to trim.
+     * @return The trimmed string.
+     */
     static String trim(String str) {
         int start;
         for (start = 0; start < str.length(); start++) {

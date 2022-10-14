@@ -1,13 +1,26 @@
 package me.cjcrafter.autosupport;
 
 import me.cjcrafter.autosupport.discord.DiscordChannelMatcher;
-import org.json.simple.JSONObject;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Class which holds data from the json files. Contains information like:
+ * <ul>
+ *     <li>When to trigger</li>
+ *     <li>Where to trigger</li>
+ *     <li>Who to respond to</li>
+ *     <li>What information to respond with</li>
+ *     <li>etc.,,</li>
+ * </ul>
+ */
 public class SupportData {
 
+    /**
+     * Add your own implementations here if you feel the defaults are not good
+     * enough.
+     */
     public static final Map<String, Activator> ACTIVATORS = new HashMap<>();
 
     static {
@@ -31,6 +44,9 @@ public class SupportData {
     private String media;
     private ButtonData button;
 
+    /**
+     * Constructor for the clinically insane.
+     */
     public SupportData(Activator activator, boolean isOnlyUnverified, boolean isDeleteAfterAnswer,
                        ChannelMatcher channelMatcher, Map<StringMatcher, Integer> keys, int keyThreshold,
                        String question, List<String> answer, String media, ButtonData button) {

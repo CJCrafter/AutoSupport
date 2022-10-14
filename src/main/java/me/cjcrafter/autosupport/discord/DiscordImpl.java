@@ -25,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * @implNote It is expected that your bot is run on exactly one server.
+ * Implementation for Discord using JDA's {@link ListenerAdapter}. This setup
+ * is designed as a "plugin-and-play" system, although you will need to write
+ * all of your json files.
  */
 public class DiscordImpl extends ListenerAdapter {
 
@@ -77,6 +79,13 @@ public class DiscordImpl extends ListenerAdapter {
             receiveMessage(textChannel, event.getAuthor(), event.getMessage());
     }
 
+    /**
+     * Handles the logic of a message being sent in a channel.
+     *
+     * @param channel The non-null channel where the message was sent.
+     * @param sender  The non-null user who sent the message.
+     * @param message The non-null message.
+     */
     public void receiveMessage(TextChannel channel, User sender, Message message) {
         String question = message.getContentRaw().toLowerCase(Locale.ROOT);
         Member member = channel.getGuild().getMember(sender);

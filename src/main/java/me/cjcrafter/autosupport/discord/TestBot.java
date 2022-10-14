@@ -14,7 +14,7 @@ import java.net.URL;
 public class TestBot {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        JDABuilder builder = JDABuilder.createDefault("fill");
+        JDABuilder builder = JDABuilder.createDefault("MTAyMTc5NjExOTYxOTA0MzM3OA.GfIJJc.23de_twv6sFx1ONVOBriuV83f17RNtUJg-OdGU");
 
         URL folder = TestBot.class.getClassLoader().getResource("examples");
         DiscordImpl autosupport = new DiscordImpl(folder, System.out::println);
@@ -33,6 +33,6 @@ public class TestBot {
         builder.setChunkingFilter(ChunkingFilter.ALL);
 
         JDA jda = builder.build().awaitReady();
-        jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.playing("Cube Development"));
+        jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.watching("you sleep"));
     }
 }
