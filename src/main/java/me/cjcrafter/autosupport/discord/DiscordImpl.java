@@ -32,10 +32,10 @@ import java.util.function.Consumer;
 public class DiscordImpl extends ListenerAdapter {
 
     private Set<String> staffRoles;
-    private Consumer<String> logger;
+    private final Consumer<String> logger;
     private String logsChannel;
     private String verifiedRole;
-    private List<SupportData> supportList;
+    private final List<SupportData> supportList;
 
     @SuppressWarnings("unchecked")
     public DiscordImpl(URL folder, Consumer<String> logger) {
