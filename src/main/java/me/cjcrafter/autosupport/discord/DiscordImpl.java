@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Implementation for Discord using JDA's {@link ListenerAdapter}. This setup
@@ -55,7 +57,11 @@ public class DiscordImpl extends ListenerAdapter {
                     return;
                 }
 
-                SupportData temp = new SupportData(json);
+                String name = file.getFileName().toString();
+                if (name.endsWith(".json"))
+                    name = name.substring(0, name.length() - ".json".length());
+
+                SupportData temp = new SupportData(name, json);
                 supportList.add(temp);
 
             } catch (IOException | ParseException e) {
@@ -65,6 +71,44 @@ public class DiscordImpl extends ListenerAdapter {
 
         if (staffRoles == null)
             throw new IllegalArgumentException("Could not find config.json, or it had no staff roles");
+    }
+
+    /**
+     * Returns a modifiable list of currently registered support data.
+     *
+     * @return The non-null support list.
+     */
+    public List<SupportData> getSupportList() {
+        return supportList;
+    }
+
+    /**
+     * Returns a stream of support data that matches the arguments. Note that
+     * the stream <i>may</i> be empty.
+     *
+     * @param channel  Which channel the support data is for.
+     * @param verified Only include support for verified users.
+     * @return The non-null stream of options.
+     */
+    public Stream<SupportData> getSupportFor(String channel, boolean verified) {
+        return getSupportList().stream()
+                .filter(support -> support.getChannelMatcher().test(channel))
+                .filter(support -> !support.isOnlyUnverified() || verified);
+    }
+
+    /**
+     * Returns the first support data found that matches the arguments. If no
+     * support data is found, this method will return null.
+     *
+     * @param channel  Which channel the support data is for.
+     * @param verified Only include support for verified users.
+     * @param name     The name of the file.
+     * @return The support data, or null.
+     */
+    public SupportData getByName(String channel, boolean verified, String name) {
+        return getSupportFor(channel, verified)
+                .filter(support -> support.getName().equalsIgnoreCase(name))
+                .findAny().orElse(null);
     }
 
     @Override

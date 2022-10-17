@@ -35,8 +35,12 @@ public class ConsoleImpl {
                 if ("config.json".equals(file.getFileName().toString()))
                     return;
 
+                String name = file.getFileName().toString();
+                if (name.endsWith(".json"))
+                    name = name.substring(0, name.length() - ".json".length());
+
                 JSONObject json = (JSONObject) parser.parse(new InputStreamReader(Files.newInputStream(file)));
-                SupportData temp = new SupportData(json);
+                SupportData temp = new SupportData(name, json);
                 supportList.add(temp);
 
             } catch (IOException | ParseException e) {

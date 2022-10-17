@@ -33,6 +33,7 @@ public class SupportData {
      */
     public record ButtonData(String label, String link) {}
 
+    private String name;
     private Activator activator;
     private boolean isOnlyUnverified;
     private boolean isDeleteAfterAnswer;
@@ -47,10 +48,11 @@ public class SupportData {
     /**
      * Constructor for the clinically insane.
      */
-    public SupportData(Activator activator, boolean isOnlyUnverified, boolean isDeleteAfterAnswer,
+    public SupportData(String name, Activator activator, boolean isOnlyUnverified, boolean isDeleteAfterAnswer,
                        ChannelMatcher channelMatcher, Map<StringMatcher, Integer> keys, int keyThreshold,
                        String question, List<String> answer, String media, ButtonData button) {
 
+        this.name = name;
         this.activator = activator;
         this.isOnlyUnverified = isOnlyUnverified;
         this.isDeleteAfterAnswer = isDeleteAfterAnswer;
@@ -64,7 +66,8 @@ public class SupportData {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public SupportData(Map json) {
+    public SupportData(String name, Map json) {
+        this.name = name;
         this.activator = ACTIVATORS.get(((String) json.getOrDefault("Activator", "QUESTION")).toUpperCase(Locale.ROOT));
         this.isOnlyUnverified = (Boolean) json.getOrDefault("Only_Unverified", false);
         this.isDeleteAfterAnswer = (Boolean) json.getOrDefault("Delete_After_Answer", true);
@@ -94,6 +97,14 @@ public class SupportData {
         boolean channelWhitelist = (Boolean) json.getOrDefault("Channel_Whitelist", true);
         List<String> channels = (List<String>) json.getOrDefault("Channels", Collections.emptyList());
         this.channelMatcher = new DiscordChannelMatcher(channelWhitelist, channels);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Activator getActivator() {

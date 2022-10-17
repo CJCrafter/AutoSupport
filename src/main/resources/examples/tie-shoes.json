@@ -1,0 +1,20 @@
+{
+  "Question": "How to tie a shoe?",
+  "Activator": "QUESTION",
+  "Channel_Whitelist": true,
+  "Channels": [
+    "1020927798380085249"
+  ],
+  "Delete_After_Answer": true,
+  "Keys": [
+    "tie,knot:2",
+    "shoe,boot,flip-flops:3",
+    "wire:-1"
+  ],
+  "Key_Threshold": 5,
+  "Message": [
+    "You are stupid",
+    "\n",
+    "\nHow have you not learned?"
+  ]
+}

@@ -15,7 +15,7 @@ public class SupportDataTest {
     void test_defaults() {
         Map json = new HashMap();
         json.put("Keys", new ArrayList<>());
-        SupportData data = new SupportData(json);
+        SupportData data = new SupportData(null, json);
 
         assertEquals(Activator.QUESTION, data.getActivator());
         assertFalse(data.isOnlyUnverified());

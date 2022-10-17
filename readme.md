@@ -42,10 +42,11 @@ It will need permission to `read:packages` (No other permissions are needed!):
 - [ ] write:packages 
   - [x] read:packages 
 
-Create a `gradle.properties` file under your root project directory.
+Create a `gradle.properties` file under your root project directory. Replace the placeholders
+with your values. 
 ```properties
-user=<Github Username>
-pass=<Generated Token>
+user=Github Username
+pass=Generated Token
 ```
 
 Add the following to your `build.gradle.kts` file. 
