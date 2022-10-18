@@ -74,6 +74,18 @@ public class DiscordImpl extends ListenerAdapter {
     }
 
     /**
+     * Returns the <code>true</code> if the given member is a staff member. The
+     * staff roles can be changes in your <code>config.json</code> file in your
+     * auto-support directory.
+     *
+     * @param member The non-null member to check.
+     * @return true if the member is staff.
+     */
+    public boolean isStaff(Member member) {
+        return member.getRoles().stream().anyMatch(role -> staffRoles.contains(role.getId()));
+    }
+
+    /**
      * Returns a modifiable list of currently registered support data.
      *
      * @return The non-null support list.
@@ -155,7 +167,7 @@ public class DiscordImpl extends ListenerAdapter {
 
         // Block the bot from replying to staff members, unless the message
         // starts with '?'.
-        if (!forceQuestion && member.getRoles().stream().anyMatch(role -> staffRoles.contains(role.getId())))
+        if (!forceQuestion && isStaff(member))
             return;
 
         // Store the best auto support
