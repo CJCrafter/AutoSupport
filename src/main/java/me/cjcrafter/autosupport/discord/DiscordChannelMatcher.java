@@ -5,7 +5,7 @@ import me.cjcrafter.autosupport.ChannelMatcher;
 import java.util.List;
 
 /**
- * Matches a list of {@link net.dv8tion.jda.api.entities.TextChannel} ids. The
+ * Matches a list of {@link net.dv8tion.jda.api.entities.channel.concrete.TextChannel} ids. The
  * ids are <b>NOT</b> validated, so it is important to check that your ids
  * actually exist in Discord.
  *

@@ -2,6 +2,7 @@ package me.cjcrafter.autosupport;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Locale;
@@ -26,12 +27,7 @@ public class KeywordMatcherTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "Can I add colors to my lore?",
-            "Does WeaponMechanics support hex codes",
-            "How can I use color codes in the item display",
-            "Are rgb values valid?"
-    })
+    @MethodSource("provide_colors")
     void test_colors(String input, boolean expected) {
         StringMatcher matcher = new KeywordMatcher("rgb", "color", "hex", "#ffffff");
         boolean actual = matcher.test(input.toLowerCase(Locale.ROOT));

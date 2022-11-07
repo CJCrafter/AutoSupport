@@ -1,7 +1,7 @@
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 
 group = "me.cjcrafter"
-version = "1.1.1"
+version = "1.1.2"
 
 plugins {
     `java-library`
@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:5.0.0-alpha.18")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.22")
     implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
